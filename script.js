@@ -1,19 +1,17 @@
-let score = 0;
+const heartsContainer = document.getElementById("hearts-container");
 
-// Обработчик клика
-document.getElementById("clickButton").addEventListener("click", () => {
-    score++;
-    document.getElementById("score").innerText = `Счет: ${score}`;
+document.addEventListener("click", (event) => {
+    const x = event.clientX;
+    const y = event.clientY;
+
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.style.left = `${x - 10}px`;
+    heart.style.top = `${y - 10}px`;
+
+    heartsContainer.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 5000);
 });
-
-// Интеграция с Telegram Web App API
-Telegram.WebApp.ready();
-
-// Получение данных о пользователе
-const user = Telegram.WebApp.initDataUnsafe.user;
-console.log(user); // Информация о пользователе
-
-// Отправка данных в Telegram
-function sendData() {
-    Telegram.WebApp.sendData(JSON.stringify({ score: score }));
-}
