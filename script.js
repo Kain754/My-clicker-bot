@@ -15,3 +15,11 @@ document.addEventListener("click", (event) => {
         heart.remove();
     }, 5000);
 });
+
+const size = Math.floor(Math.random() * 30) + 10; // От 10px до 40px
+heart.style.width = `${size}px`;
+heart.style.height = `${size}px`;
+
+const colors = ["red", "pink", "orange", "purple"];
+const randomColor = colors[Math.floor(Math.random() * colors.length)];
+heart.style.backgroundColor = randomColor;
