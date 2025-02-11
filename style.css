@@ -13,8 +13,6 @@ body {
 
 .heart {
     position: absolute;
-    width: 20px;
-    height: 20px;
     background-color: red;
     clip-path: polygon(
         50% 0%,
@@ -27,6 +25,9 @@ body {
         30% 20%
     );
     animation: float 5s ease-in-out forwards;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); /* Тень */
+    opacity: 0; /* Начальная прозрачность */
+    transition: opacity 0.5s ease-in-out; /* Плавное появление */
 }
 
 @keyframes float {
