@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кликер-игра</title>
+    <title>Игра с сердечками и смайликами</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="hearts-container"></div>
+    <div id="game-container">
+        <div id="smileys-container"></div>
+        <div id="hearts-container"></div>
+        <div id="game-over" class="hidden">
+            <p>Игра окончена</p>
+            <button id="restart-button">Заново</button>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
