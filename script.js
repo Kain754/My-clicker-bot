@@ -2,9 +2,11 @@ const smileysContainer = document.getElementById("smileys-container");
 const heartsContainer = document.getElementById("hearts-container");
 const gameOverDiv = document.getElementById("game-over");
 const restartButton = document.getElementById("restart-button");
+const scoreElement = document.getElementById("score");
 
 let gameActive = true;
 let smileyInterval;
+let score = 0;
 
 // Функция для создания недовольного смайлика
 function createSmiley() {
@@ -42,6 +44,13 @@ function createSmiley() {
                 smiley.style.color = "green";
                 clearInterval(fallInterval);
                 setTimeout(() => smiley.remove(), 3000);
+
+                // Удаление сердечка
+                heart.remove();
+
+                // Увеличение счетчика очков
+                score++;
+                scoreElement.textContent = `Очки: ${score}`;
             }
         });
     }, 20);
@@ -61,6 +70,11 @@ function createHeart(x, y) {
 
     // Анимация подъема сердечка
     const riseInterval = setInterval(() => {
+        if (!gameActive) {
+            clearInterval(riseInterval);
+            return;
+        }
+
         const top = parseFloat(heart.style.top);
         heart.style.top = `${top - 2}px`;
 
@@ -105,6 +119,8 @@ restartButton.addEventListener("click", () => {
     smileysContainer.innerHTML = "";
     heartsContainer.innerHTML = "";
     gameOverDiv.classList.add("hidden");
+    score = 0;
+    scoreElement.textContent = `Очки: ${score}`;
     smileyInterval = setInterval(createSmiley, 1000);
 });
 
