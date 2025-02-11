@@ -2,7 +2,7 @@ body {
     margin: 0;
     overflow: hidden;
     height: 100vh;
-    background-color: #add8e6;
+    background-color: #f0f0f0;
 }
 
 #hearts-container {
@@ -30,6 +30,7 @@ body {
     transition: opacity 0.5s ease-in-out; /* Плавное появление */
 }
 
+/* Анимация для плавного исчезновения */
 @keyframes float {
     0% {
         opacity: 1;
