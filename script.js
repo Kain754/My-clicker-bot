@@ -1,32 +1,112 @@
+const smileysContainer = document.getElementById("smileys-container");
 const heartsContainer = document.getElementById("hearts-container");
+const gameOverDiv = document.getElementById("game-over");
+const restartButton = document.getElementById("restart-button");
 
-document.addEventListener("click", (event) => {
-    const x = event.clientX;
-    const y = event.clientY;
+let gameActive = true;
+let smileyInterval;
 
-    // Создаем сердечко
+// Функция для создания недовольного смайлика
+function createSmiley() {
+    if (!gameActive) return;
+
+    const smiley = document.createElement("div");
+    smiley.classList.add("smiley");
+    smiley.textContent = "😠";
+    smiley.style.left = `${Math.random() * (window.innerWidth - 30)}px`;
+    smiley.style.top = "-30px";
+
+    smileysContainer.appendChild(smiley);
+
+    // Анимация падения смайлика
+    const fallInterval = setInterval(() => {
+        if (!gameActive) {
+            clearInterval(fallInterval);
+            return;
+        }
+
+        const top = parseFloat(smiley.style.top);
+        smiley.style.top = `${top + 2}px`;
+
+        // Проверка на достижение низа экрана
+        if (top > window.innerHeight) {
+            clearInterval(fallInterval);
+            endGame();
+        }
+
+        // Проверка на столкновение с сердечками
+        const hearts = document.querySelectorAll(".heart");
+        hearts.forEach(heart => {
+            if (checkCollision(smiley, heart)) {
+                smiley.textContent = "😊";
+                smiley.style.color = "green";
+                clearInterval(fallInterval);
+                setTimeout(() => smiley.remove(), 3000);
+            }
+        });
+    }, 20);
+}
+
+// Функция для создания сердечка
+function createHeart(x, y) {
+    if (!gameActive) return;
+
     const heart = document.createElement("div");
     heart.classList.add("heart");
+    heart.textContent = "❤️";
+    heart.style.left = `${x - 10}px`;
+    heart.style.top = `${y - 10}px`;
 
-    // Случайный размер (от 10px до 40px)
-    const size = Math.floor(Math.random() * 30) + 10; // От 10 до 40
-    heart.style.width = `${size}px`;
-    heart.style.height = `${size}px`;
-
-    // Случайный цвет
-    const colors = ["#FF6B6B", "#FF9F68", "#FFD166", "#A8E6CF", "#84DCC6", "#6B5B95", "#FF6F61"];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    heart.style.backgroundColor = randomColor;
-
-    // Позиционируем сердечко
-    heart.style.left = `${x - size / 2}px`; // Центрируем по X
-    heart.style.top = `${y - size / 2}px`; // Центрируем по Y
-
-    // Добавляем сердечко в контейнер
     heartsContainer.appendChild(heart);
 
-    // Удаляем сердечко через 5 секунд
-    setTimeout(() => {
-        heart.remove();
-    }, 5000); // 5000 мс = 5 секунд
+    // Анимация подъема сердечка
+    const riseInterval = setInterval(() => {
+        const top = parseFloat(heart.style.top);
+        heart.style.top = `${top - 2}px`;
+
+        // Удаление сердечка при достижении верха экрана
+        if (top < -20) {
+            clearInterval(riseInterval);
+            heart.remove();
+        }
+    }, 20);
+}
+
+// Функция для проверки столкновений
+function checkCollision(element1, element2) {
+    const rect1 = element1.getBoundingClientRect();
+    const rect2 = element2.getBoundingClientRect();
+
+    return (
+        rect1.left < rect2.right &&
+        rect1.right > rect2.left &&
+        rect1.top < rect2.bottom &&
+        rect1.bottom > rect2.top
+    );
+}
+
+// Функция для завершения игры
+function endGame() {
+    gameActive = false;
+    clearInterval(smileyInterval);
+    gameOverDiv.classList.remove("hidden");
+}
+
+// Обработчик клика для создания сердечек
+document.addEventListener("click", (event) => {
+    if (gameActive) {
+        createHeart(event.clientX, event.clientY);
+    }
 });
+
+// Обработчик кнопки "Заново"
+restartButton.addEventListener("click", () => {
+    gameActive = true;
+    smileysContainer.innerHTML = "";
+    heartsContainer.innerHTML = "";
+    gameOverDiv.classList.add("hidden");
+    smileyInterval = setInterval(createSmiley, 1000);
+});
+
+// Запуск игры
+smileyInterval = setInterval(createSmiley, 1000);
