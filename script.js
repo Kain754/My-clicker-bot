@@ -14,7 +14,7 @@ function createSmiley() {
 
     const smiley = document.createElement("div");
     smiley.classList.add("smiley");
-    smiley.textContent = "😠";
+    smiley.textContent = "С днюхой!!!";
     smiley.style.left = `${Math.random() * (window.innerWidth - 30)}px`;
     smiley.style.top = "-30px";
 
@@ -62,7 +62,7 @@ function createHeart(x, y) {
 
     const heart = document.createElement("div");
     heart.classList.add("heart");
-    heart.textContent = "❤️";
+    heart.textContent = "Ура!!!";
     heart.style.left = `${x - 10}px`;
     heart.style.top = `${y - 10}px`;
 
