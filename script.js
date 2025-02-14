@@ -8,13 +8,16 @@ let gameActive = true;
 let smileyInterval;
 let score = 0;
 
+// Массив с разными смайликами
+const happySmileys = ["Прекрасная", "Красивая", "Умная", "Стильная", "Любимая", "Талантливая", "Умопомрачительная", "Искренняя", "Хозяйственная", "Юморная"];
+
 // Функция для создания недовольного смайлика
 function createSmiley() {
     if (!gameActive) return;
 
     const smiley = document.createElement("div");
     smiley.classList.add("smiley");
-    smiley.textContent = "С днюхой!!!";
+    smiley.textContent = "🤗";
     smiley.style.left = `${Math.random() * (window.innerWidth - 30)}px`;
     smiley.style.top = "-30px";
 
@@ -40,7 +43,9 @@ function createSmiley() {
         const hearts = document.querySelectorAll(".heart");
         hearts.forEach(heart => {
             if (checkCollision(smiley, heart)) {
-                smiley.textContent = "😊";
+                // Случайный выбор смайлика
+                const randomSmiley = happySmileys[Math.floor(Math.random() * happySmileys.length)];
+                smiley.textContent = randomSmiley;
                 smiley.style.color = "green";
                 clearInterval(fallInterval);
                 setTimeout(() => smiley.remove(), 3000);
@@ -56,13 +61,15 @@ function createSmiley() {
     }, 20);
 }
 
+// Остальной код (createHeart, checkCollision, endGame, restartButton) остается без изменений
+
 // Функция для создания сердечка
 function createHeart(x, y) {
     if (!gameActive) return;
 
     const heart = document.createElement("div");
     heart.classList.add("heart");
-    heart.textContent = "Ура!!!";
+    heart.textContent = "🥰";
     heart.style.left = `${x - 10}px`;
     heart.style.top = `${y - 10}px`;
 
