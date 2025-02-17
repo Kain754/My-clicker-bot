@@ -42,6 +42,16 @@ body {
     font-size: 20px;
 }
 
+#player {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: blue;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 #game-over {
     position: absolute;
     top: 50%;
