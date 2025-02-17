@@ -1,3 +1,4 @@
+
 // Элементы игры
 const smileysContainer = document.getElementById("smileys-container");
 const heartsContainer = document.getElementById("hearts-container");
@@ -31,7 +32,7 @@ joystick.addEventListener("mousedown", (event) => {
     joystickStartX = event.clientX;
 });
 
-document.addEventListener("mousemove", (event) => {
+joystick.addEventListener("mousemove", (event) => {
     if (isDragging) {
         const moveX = event.clientX - joystickStartX;
         joystickOffsetX = moveX;
@@ -44,7 +45,7 @@ document.addEventListener("mousemove", (event) => {
         joystick.style.transform = `translateX(${joystickOffsetX}px)`;
 
         // Перемещение игрока
-        playerX += moveX * 0.2; // Масштабируем скорость перемещения
+        playerX += moveX * 0.05; // Масштабируем скорость перемещения
         if (playerX < 0) playerX = 0;
         if (playerX > window.innerWidth - 40) playerX = window.innerWidth - 40;
         player.style.left = `${playerX}px`;
@@ -53,11 +54,18 @@ document.addEventListener("mousemove", (event) => {
     }
 });
 
-document.addEventListener("mouseup", () => {
+joystick.addEventListener("mouseup", () => {
     isDragging = false;
     joystickOffsetX = 0;
     joystick.style.transform = `translateX(0)`;
 });
+
+joystick.addEventListener("mouseleave", () => { // optional: release on mouse leave
+    isDragging = false;
+    joystickOffsetX = 0;
+    joystick.style.transform = `translateX(0)`;
+});
+
 
 // Автоматическая стрельба сердечками
 heartInterval = setInterval(() => {
@@ -185,3 +193,4 @@ restartButton.addEventListener("click", () => {
 
 // Запуск игры
 smileyInterval = setInterval(createSmiley, 1000);
+
