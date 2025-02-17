@@ -1,10 +1,14 @@
+// Элементы игры
 const smileysContainer = document.getElementById("smileys-container");
 const heartsContainer = document.getElementById("hearts-container");
 const gameOverDiv = document.getElementById("game-over");
 const restartButton = document.getElementById("restart-button");
 const scoreElement = document.getElementById("score");
 const player = document.getElementById("player");
+const joystick = document.getElementById("joystick");
+const joystickContainer = document.getElementById("joystick-container");
 
+// Переменные игры
 let gameActive = true;
 let smileyInterval;
 let heartInterval;
@@ -17,31 +21,42 @@ const happySmileys = ["😊", "😍", "😎", "🥰", "🤗", "😇", "😳"];
 let playerX = window.innerWidth / 2 - 20; // Начальная позиция по центру
 player.style.left = `${playerX}px`;
 
-// Управление перемещением игрока
+// Управление джойстиком
 let isDragging = false;
-let startX = 0;
+let joystickStartX = 0;
+let joystickOffsetX = 0;
 
-document.addEventListener("mousedown", (event) => {
+joystick.addEventListener("mousedown", (event) => {
     isDragging = true;
-    startX = event.clientX;
+    joystickStartX = event.clientX;
 });
 
 document.addEventListener("mousemove", (event) => {
     if (isDragging) {
-        const moveX = event.clientX - startX;
-        playerX += moveX;
+        const moveX = event.clientX - joystickStartX;
+        joystickOffsetX = moveX;
 
-        // Ограничение перемещения в пределах экрана
+        // Ограничение перемещения джойстика в пределах контейнера
+        const maxOffset = joystickContainer.offsetWidth / 2 - joystick.offsetWidth / 2;
+        if (joystickOffsetX < -maxOffset) joystickOffsetX = -maxOffset;
+        if (joystickOffsetX > maxOffset) joystickOffsetX = maxOffset;
+
+        joystick.style.transform = `translateX(${joystickOffsetX}px)`;
+
+        // Перемещение игрока
+        playerX += moveX * 0.2; // Масштабируем скорость перемещения
         if (playerX < 0) playerX = 0;
         if (playerX > window.innerWidth - 40) playerX = window.innerWidth - 40;
-
         player.style.left = `${playerX}px`;
-        startX = event.clientX;
+
+        joystickStartX = event.clientX;
     }
 });
 
 document.addEventListener("mouseup", () => {
     isDragging = false;
+    joystickOffsetX = 0;
+    joystick.style.transform = `translateX(0)`;
 });
 
 // Автоматическая стрельба сердечками
