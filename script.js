@@ -28,8 +28,9 @@ let joystickOffsetX = 0;
 
 // Функция для получения координат касания (поддержка мыши и тач)
 function getClientX(event) {
-    return event.clientX || (event.touches && event.touches[0].clientX) || 0;
+    return event.clientX || (event.touches && event.touches[0].clientX);
 }
+
 
 function startDrag(event) {
     isDragging = true;
@@ -49,7 +50,7 @@ function drag(event) {
         joystick.style.transform = `translateX(${joystickOffsetX}px)`;
 
         // Перемещение игрока
-        playerX += moveX * 0.2; // Увеличиваем скорость перемещения
+        playerX += moveX * 0.05; // Масштабируем скорость перемещения
         if (playerX < 0) playerX = 0;
         if (playerX > window.innerWidth - 40) playerX = window.innerWidth - 40;
         player.style.left = `${playerX}px`;
@@ -58,7 +59,7 @@ function drag(event) {
     }
 }
 
-function endDrag() {
+function endDrag(event) {
     isDragging = false;
     joystickOffsetX = 0;
     joystick.style.transform = `translateX(0)`;
@@ -71,16 +72,12 @@ joystick.addEventListener("mouseup", endDrag);
 joystick.addEventListener("mouseleave", endDrag); // optional: release on mouse leave
 
 // Touch events
-joystick.addEventListener("touchstart", (event) => {
-    event.preventDefault(); // Предотвращаем скролл
-    startDrag(event);
-});
-joystick.addEventListener("touchmove", (event) => {
-    event.preventDefault(); // Предотвращаем скролл
-    drag(event);
-});
+joystick.addEventListener("touchstart", startDrag);
+joystick.addEventListener("touchmove", drag);
 joystick.addEventListener("touchend", endDrag);
 joystick.addEventListener("touchcancel", endDrag);
+
+
 
 // Автоматическая стрельба сердечками
 heartInterval = setInterval(() => {
@@ -96,7 +93,7 @@ function createSmiley() {
     const smiley = document.createElement("div");
     smiley.classList.add("smiley");
     smiley.textContent = "😠";
-    smiley.style.left = `${Math.random() * (window.innerWidth - 30)}px`;
+    smiley.style.left = ${Math.random() * (window.innerWidth - 30)}px;
     smiley.style.top = "-30px";
 
     smileysContainer.appendChild(smiley);
@@ -109,7 +106,7 @@ function createSmiley() {
         }
 
         const top = parseFloat(smiley.style.top);
-        smiley.style.top = `${top + 2}px`;
+        smiley.style.top = ${top + 2}px;
 
         // Проверка на достижение низа экрана
         if (top > window.innerHeight) {
@@ -133,10 +130,78 @@ function createSmiley() {
 
                 // Увеличение счетчика очков
                 score++;
-                scoreElement.textContent = `Очки: ${score}`;
+                scoreElement.textContent = Очки: ${score};
             }
         });
     }, 20);
 }
 
-// Остальной код (createHeart, checkCollision, endGame, restartButton) остается без изменений
+// Функция для создания сердечка
+function createHeart(x, y) {
+    if (!gameActive) return;
+
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.textContent = "❤️";
+    heart.style.left = ${x - 10}px;
+    heart.style.top = ${y - 10}px;
+
+    heartsContainer.appendChild(heart);
+
+    // Анимация подъема сердечка
+    const riseInterval = setInterval(() => {
+        if (!gameActive) {
+            clearInterval(riseInterval);
+            return;
+        }
+
+        const top = parseFloat(heart.style.top);
+        heart.style.top = ${top - 2}px;
+
+        // Удаление сердечка при достижении верха экрана
+        if (top < -20) {
+            clearInterval(riseInterval);
+            heart.remove();
+        }
+    }, 20);
+}
+
+// Функция для проверки столкновений
+function checkCollision(element1, element2) {
+    const rect1 = element1.getBoundingClientRect();
+    const rect2 = element2.getBoundingClientRect();
+
+    return (
+        rect1.left < rect2.right &&
+        rect1.right > rect2.left &&
+        rect1.top < rect2.bottom &&
+        rect1.bottom > rect2.top
+    );
+}
+
+// Функция для завершения игры
+function endGame() {
+    gameActive = false;
+    clearInterval(smileyInterval);
+    clearInterval(heartInterval);
+    gameOverDiv.classList.remove("hidden");
+}
+
+// Обработчик кнопки "Заново"
+restartButton.addEventListener("click", () => {
+    gameActive = true;
+    smileysContainer.innerHTML = "";
+    heartsContainer.innerHTML = "";
+    gameOverDiv.classList.add("hidden");
+    score = 0;
+    scoreElement.textContent = Очки: ${score};
+    smileyInterval = setInterval(createSmiley, 1000);
+    heartInterval = setInterval(() => {
+        if (gameActive) {
+            createHeart(playerX + 20, window.innerHeight - 60);
+        }
+    }, 1000);
+});
+
+// Запуск игры
+smileyInterval = setInterval(createSmiley, 1000);
